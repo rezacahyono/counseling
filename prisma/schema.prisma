@@ -1,0 +1,129 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  image     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Criteria {
+  id            String   @id @default(cuid())
+  name          String
+  valuePriority Float?   @db.Double
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  subcriteria         Subcriteria[]
+  comparisonCriteria1 ComparisonCriteria[] @relation("criteriaId1")
+  comparisonCriteria2 ComparisonCriteria[] @relation("criteriaId2")
+  offence             Offense[]
+}
+
+model Subcriteria {
+  id            String   @id @default(cuid())
+  poin          Int
+  name          String
+  description   String   @db.Text
+  valuePriority Float?   @db.Double
+  criteria      Criteria @relation(fields: [criteriaId], references: [id])
+  criteriaId    String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  comparisonSubcriteria1 ComparisonSubcriteria[] @relation("subcriteria1")
+  comparisonSubcriteria2 ComparisonSubcriteria[] @relation("subcriteria2")
+  offence                Offense[]
+}
+
+model Student {
+  id                String   @id @default(cuid())
+  nis               String   @unique
+  name              String
+  class             String
+  gender            String
+  address           String?  @db.Text
+  nameParent        String
+  phoneNumberParent String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  offence       Offense[]
+  recomandation Recomendation?
+}
+
+model ComparisonCriteria {
+  id              String   @id @default(cuid())
+  criteria1       Criteria @relation("criteriaId1", fields: [criteriaId1], references: [id])
+  criteriaId1     String
+  criteria2       Criteria @relation("criteriaId2", fields: [criteriaId2], references: [id])
+  criteriaId2     String
+  valueComparison Float?   @default(1.0) @db.Double
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([criteriaId1, criteriaId2], name: "constraintCriteria")
+}
+
+model ComparisonSubcriteria {
+  id              String      @id @default(cuid())
+  subcriteria1    Subcriteria @relation("subcriteria1", fields: [subcriteriaId1], references: [id])
+  subcriteriaId1  String
+  subcriteria2    Subcriteria @relation("subcriteria2", fields: [subcriteriaId2], references: [id])
+  subcriteriaId2  String
+  valueComparison Float?      @default(1.0) @db.Double
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@unique([subcriteriaId1, subcriteriaId2], name: "constraintSubcriteria")
+}
+
+model ActionSchool {
+  id            String          @id @default(cuid())
+  poinStart     Int
+  poinEnd       Int
+  stack         String
+  action        String          @db.Text
+  sanction      String          @db.Text
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  recomendation Recomendation[]
+}
+
+model Offense {
+  id            String      @id @default(cuid())
+  student       Student     @relation(fields: [studentId], references: [id])
+  studentId     String
+  criteria      Criteria    @relation(fields: [criteriaId], references: [id])
+  criteriaId    String
+  subcriteria   Subcriteria @relation(fields: [subcriteriaId], references: [id])
+  subcriteriaId String
+  description   String      @db.Text
+  date          DateTime
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model Recomendation {
+  id             String       @id @default(cuid())
+  student        Student      @relation(fields: [studentId], references: [id])
+  studentId      String       @unique
+  totalPoin      Float
+  actionSchool   ActionSchool @relation(fields: [actionSchoolId], references: [id])
+  actionSchoolId String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
