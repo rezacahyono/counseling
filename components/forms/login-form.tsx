@@ -8,35 +8,38 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Button, Link } from '@nextui-org/react'
 import InputForm from '../input/input-form'
+import { signIn } from 'next-auth/react'
 
 export default function LoginForm() {
+  const [isLoading, setIsLoading] = React.useState(false)
   const router = useRouter()
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<z.infer<typeof loginScheme>>({
     resolver: zodResolver(loginScheme),
   })
 
   const handleOnSubmit = handleSubmit(async data => {
     const toast = (await import('react-hot-toast')).default
-    const { signIn } = await import('next-auth/react')
+    setIsLoading(true)
     try {
       await signIn('credentials', {
         redirect: false,
         email: data.email,
         password: data.password,
       }).then(value => {
-        console.log(value?.ok)
         if (value?.ok) {
           router.push('/')
         } else {
-          toast.error(value?.error ?? '')
+          toast.error('Login gagal')
         }
       })
+      setIsLoading(false)
     } catch (error: any) {
+      setIsLoading(false)
       console.error('Error during sign in:', error.message)
     }
   })
@@ -61,7 +64,7 @@ export default function LoginForm() {
       <Button
         color='primary'
         variant='shadow'
-        isLoading={isSubmitting}
+        isLoading={isLoading}
         type='submit'
       >
         Masuk
