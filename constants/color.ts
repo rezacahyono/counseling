@@ -1,7 +1,6 @@
 import { between } from '@/utils/util'
 import { ChipProps } from '@nextui-org/react'
 
-
 export const poinColorMap = (poin: number) => {
   if (between(poin, 0, 25)) {
     return 'primary'
@@ -20,4 +19,12 @@ export const classColorMap: Record<string, ChipProps['color']> = {
   x: 'primary',
   xi: 'secondary',
   xii: 'warning',
+}
+
+export const consistencyColorMap = (value: number) => {
+  if (value <= 0.1) {
+    return 'primary'
+  } else {
+    return 'danger'
+  }
 }

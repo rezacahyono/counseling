@@ -2,9 +2,14 @@ import { Inter } from 'next/font/google'
 import '../styles/globals.css'
 import { Toaster } from 'react-hot-toast'
 import dynamic from 'next/dynamic'
-const Navbar = dynamic(() => import('@/components/navigation/navbar'))
-const Sidebar= dynamic(()=> import('@/components/navigation/sidebar'))
-const Providers =dynamic(() => import('../providers'))
+
+const Navbar = dynamic(() => import('@/components/navigation/navbar'), {
+  ssr: false,
+})
+const Sidebar = dynamic(() => import('@/components/navigation/sidebar'), {
+  ssr: false,
+})
+const Providers = dynamic(() => import('@/app/providers'))
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -29,19 +34,19 @@ export default function RootLayout({
             success: {
               style: {
                 background: 'background',
-                color: 'ButtonText'
+                color: 'ButtonText',
               },
             },
             loading: {
               style: {
                 background: 'background',
-                color: 'ButtonText'
+                color: 'ButtonText',
               },
             },
             error: {
               style: {
                 background: 'background',
-                color: 'ButtonText'
+                color: 'ButtonText',
               },
             },
           }}

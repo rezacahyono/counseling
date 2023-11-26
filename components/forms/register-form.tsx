@@ -1,13 +1,13 @@
 'use client'
 
+import React from 'react'
 import { registerScheme } from '@/lib/validations/auth'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Button, Input } from '@nextui-org/react'
-import Link from 'next/link'
+import { Button, Link } from '@nextui-org/react'
 import { useRouter } from 'next/navigation'
-import React from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import InputForm from '../input/input-form'
 
 export default function RegisterForm() {
   const router = useRouter()
@@ -22,8 +22,7 @@ export default function RegisterForm() {
 
   const handleOnSubmit = handleSubmit(async data => {
     const toast = (await import('react-hot-toast')).default
-    const createNewUser = (await import('@/lib/actions/user.action'))
-      .createNewUser
+    const { createNewUser } = await import('@/lib/actions/user.action')
     try {
       await createNewUser({
         name: data.name,
@@ -39,32 +38,27 @@ export default function RegisterForm() {
 
   return (
     <form onSubmit={handleOnSubmit} className='flex flex-col space-y-6 p-8'>
-      <Input
-        type='name'
-        label='Nama'
-        fullWidth
-        variant='bordered'
-        {...register('name')}
-        isInvalid={errors.name ? true : false}
-        errorMessage={errors.name?.message}
+      <InputForm
+        label={'Nama'}
+        name={'name'}
+        register={register}
+        errors={errors}
+        type='text'
       />
-      <Input
-        type='email'
-        label='Email'
-        fullWidth
-        variant='bordered'
-        {...register('email')}
-        isInvalid={errors.email ? true : false}
-        errorMessage={errors.email?.message}
+      <InputForm
+        label={'Email'}
+        name={'email'}
+        register={register}
+        errors={errors}
+        type='text'
       />
-      <Input
+
+      <InputForm
+        label={'Password'}
+        name={'password'}
+        register={register}
+        errors={errors}
         type='password'
-        label='Password'
-        fullWidth
-        variant='bordered'
-        {...register('password')}
-        isInvalid={errors.password ? true : false}
-        errorMessage={errors.password?.message}
       />
       <Button
         color='primary'

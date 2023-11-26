@@ -1,15 +1,15 @@
 'use client'
 
+import React from 'react'
 import { loginScheme } from '@/lib/validations/auth'
 import { useRouter } from 'next/navigation'
-import React from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Button, Input } from '@nextui-org/react'
-import Link from 'next/link'
+import { Button, Link } from '@nextui-org/react'
+import InputForm from '../input/input-form'
 
-const LoginForm = () => {
+export default function LoginForm() {
   const router = useRouter()
 
   const {
@@ -22,43 +22,42 @@ const LoginForm = () => {
 
   const handleOnSubmit = handleSubmit(async data => {
     const toast = (await import('react-hot-toast')).default
-    const signIn = (await import('next-auth/react')).signIn
-    await signIn('credentials', {
-      redirect: false,
-      email: data.email,
-      password: data.password,
-    })
-      .then(value => {
-        if (value?.error) {
+    const { signIn } = await import('next-auth/react')
+    try {
+      await signIn('credentials', {
+        redirect: false,
+        email: data.email,
+        password: data.password,
+      }).then(value => {
+        console.log(value?.ok)
+        if (value?.ok) {
+          router.push('/')
+        } else {
           toast.error(value?.error ?? '')
         }
-        router.push('/')
       })
-      .catch((error: any) => {
-        console.log(error.message)
-      })
+    } catch (error: any) {
+      console.error('Error during sign in:', error.message)
+    }
   })
 
   return (
     <form onSubmit={handleOnSubmit} className='flex flex-col space-y-6 p-8'>
-      <Input
-        type='email'
-        label='Email'
-        fullWidth
-        variant='bordered'
-        {...register('email')}
-        isInvalid={errors.email ? true : false}
-        errorMessage={errors.email?.message}
+      <InputForm
+        label={'Email'}
+        name={'email'}
+        register={register}
+        errors={errors}
+        type='text'
       />
-      <Input
+      <InputForm
+        label={'Password'}
+        name={'password'}
+        register={register}
+        errors={errors}
         type='password'
-        label='Password'
-        fullWidth
-        variant='bordered'
-        {...register('password')}
-        isInvalid={errors.password ? true : false}
-        errorMessage={errors.password?.message}
       />
+
       <Button
         color='primary'
         variant='shadow'
@@ -76,6 +75,4 @@ const LoginForm = () => {
     </form>
   )
 }
-
-export default LoginForm
 

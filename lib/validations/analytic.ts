@@ -32,3 +32,10 @@ export const actionSchoolScheme = z.object({
   sanction: z.string().min(1, 'Sanksi harus diisi'),
 })
 
+export const offenseScheme = z.object({
+  studentId: z.string().min(1, 'Siswa harus diisi'),
+  criteriaId: z.string().min(1, 'Kriteria harus diisi'),
+  subcriteriaId: z.string().min(1, 'Subkriteria harus diisi'),
+  description: z.string().min(1, 'Deskripsi harus diisi').max(65535),
+  date: z.coerce.date(),
+})

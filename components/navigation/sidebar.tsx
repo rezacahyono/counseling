@@ -1,6 +1,5 @@
 'use client'
 import { useSidebarContext } from '@/hook/sidebar-context'
-import { Divider, Image } from '@nextui-org/react'
 import classNames from 'classnames'
 import Link from 'next/link'
 import React from 'react'
@@ -17,6 +16,7 @@ import SidebarItem from './sidebar-item'
 import { usePathname } from 'next/navigation'
 import SidebarMenu from './sidebar-menu'
 import CollapseItem from './collapse-item'
+import Image from 'next/image'
 
 const itemMenu = [
   { label: 'Kriteria', href: '/kriteria', icon: <BiSolidFolder size={15} /> },
@@ -53,6 +53,7 @@ export default function Sidebar() {
               className='h-auto w-auto rounded-full'
               width={100}
               height={100}
+              priority
             />
           </Link>
         </div>

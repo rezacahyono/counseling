@@ -6,13 +6,13 @@ import { studentScheme } from '../validations/analytic'
 import { revalidatePath } from 'next/cache'
 import { handlePrismaError } from '../prisma/errors'
 
-export async function fecthAllStudent() {
+export async function fetchAllStudent() {
   return await prisma.student.findMany()
 }
 
-export async function fetchStudentById(id: string){
+export async function fetchStudentById(id: string) {
   return await prisma.student.findUnique({
-    where: {id: id}
+    where: { id: id },
   })
 }
 
@@ -70,18 +70,38 @@ export async function deleteStudentById({
   path: string
 }): Promise<void> {
   try {
-    if (ids) {
-      await prisma.student.deleteMany({
+    if (ids && ids.length > 0) {
+      // const deleteRecomendationMany = prisma.recomendation.deleteMany({
+      //   where: { studentId: { in: ids } },
+      // })
+      // const deleteOffenseMany = prisma.offense.deleteMany({
+      //   where: { studentId: { in: ids } },
+      // })
+      const deleteStudentMany = prisma.student.deleteMany({
         where: {
           id: {
             in: ids,
           },
         },
       })
+
+      await prisma.$transaction([
+        deleteStudentMany,
+      ])
     } else if (id) {
-      await prisma.student.delete({
+      // const deleteRecomendation = prisma.recomendation.delete({
+      //   where: { studentId: id },
+      // })
+      // const deleteOffense = prisma.offense.deleteMany({
+      //   where: { studentId: id },
+      // })
+      const deleteStudent = prisma.student.delete({
         where: { id: id },
       })
+
+      await prisma.$transaction([
+        deleteStudent,
+      ])
     }
     revalidatePath(path)
   } catch (error) {

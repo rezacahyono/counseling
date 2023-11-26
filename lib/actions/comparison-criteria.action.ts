@@ -34,13 +34,12 @@ export async function updateComparisonCriteriaById(
       data: comparisonCriteria,
     })
 
-    const comparisonCriterias = await prisma.comparisonCriteria
-      .findMany()
-      .then(value => value.flatMap(compar => (compar ? [compar] : [])))
+    const comparisonCriterias = await prisma.comparisonCriteria.findMany()
 
     const criterias = await prisma.criteria.findMany()
     const updatedValuePriorityCriteria = criterias.map(async (item, index) => {
-      const comparisonMatrix = createComparisonCriteriaMatrix(comparisonCriterias)
+      const comparisonMatrix =
+        createComparisonCriteriaMatrix(comparisonCriterias)
       const eigenValues = calculateEigenValues(comparisonMatrix)
       const normalizedValues = calculateNormalizedValues(
         comparisonMatrix,

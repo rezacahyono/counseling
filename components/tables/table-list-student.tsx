@@ -28,7 +28,7 @@ import { usePathname } from 'next/navigation'
 import React from 'react'
 import { BiSearchAlt } from 'react-icons/bi'
 import { IoChevronDown } from 'react-icons/io5'
-import { FaEye } from "react-icons/fa";
+import { FaEye } from 'react-icons/fa'
 
 const StudentForm = dynamic(() => import('../forms/student-form'))
 const ButtonDelete = dynamic(() => import('../button/button-delete'))
@@ -37,7 +37,7 @@ type Props = {
   students: Student[]
 }
 
-const TableListStudent = ({ students }: Props) => {
+export default function TableListStudent({ students }: Props) {
   const [filterValue, setFilterValue] = React.useState('')
   const [classFilter, setClassFilter] = React.useState<Selection>('all')
   const [rowsPerPage, setRowsPerPage] = React.useState(5)
@@ -75,8 +75,8 @@ const TableListStudent = ({ students }: Props) => {
       classFilter !== 'all' &&
       Array.from(classFilter).length !== classOptions.length
     ) {
-      filteredStudents = filteredStudents.filter(siswa =>
-        Array.from(classFilter).includes(siswa.class.toLowerCase())
+      filteredStudents = filteredStudents.filter(student =>
+        Array.from(classFilter).includes(student.class.toLowerCase())
       )
     }
     return filteredStudents
@@ -97,9 +97,13 @@ const TableListStudent = ({ students }: Props) => {
 
       switch (columnKey) {
         case 'nis':
-          return <p className='font-medium text-base capitalize'>{cellValue}</p>
+          return <p className='text-sm font-medium capitalize'>{cellValue}</p>
         case 'name':
-          return <p className='font-medium text-base capitalize'>{cellValue}</p>
+          return (
+            <div className='flex w-screen max-w-[200px]'>
+              <p className='font-medium text-sm capitalize'>{cellValue}</p>
+            </div>
+          )
         case 'class':
           return (
             <Chip
@@ -222,7 +226,7 @@ const TableListStudent = ({ students }: Props) => {
         <div className='flex justify-between items-center'>
           <div className='flex gap-1 lg:gap-4 flex-col lg:flex-row'>
             <span className='text-default-400 text-small'>
-              Total {studentSelected.length} siswa
+              Total {students.length} siswa
             </span>
             <span className='text-small text-default-400'>
               {selectionKeys === 'all'
@@ -252,7 +256,7 @@ const TableListStudent = ({ students }: Props) => {
     onRowsPerPageChange,
     onSearchChange,
     selectionKeys,
-    studentSelected.length,
+    students.length,
   ])
 
   const bottomContent = React.useMemo(() => {
@@ -353,6 +357,4 @@ const TableListStudent = ({ students }: Props) => {
     </Table>
   )
 }
-
-export default TableListStudent
 

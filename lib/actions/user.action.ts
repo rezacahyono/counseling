@@ -5,6 +5,13 @@ import prisma from '../prisma/client'
 import { registerScheme } from '../validations/auth'
 import { compare, hash } from 'bcrypt'
 import { handlePrismaError } from '../prisma/errors'
+import { revalidatePath } from 'next/cache'
+
+export async function fetchUserByEmail(email: string) {
+  return prisma.user.findUnique({
+    where: { email: email },
+  })
+}
 
 export async function fecthUserByEmailPassword(
   email: string,
@@ -56,6 +63,25 @@ export async function createNewUser({
       throw handlePrismaError(error)
     }
     throw new Error(`Gagal register`)
+  }
+}
+
+export async function updateUserByEmail(
+  email: string,
+  user: Prisma.UserUncheckedUpdateInput,
+  path: string
+): Promise<void> {
+  try {
+    await prisma.user.update({
+      where: { email: email },
+      data: user,
+    })
+    
+    revalidatePath(path)
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      throw handlePrismaError(error)
+    }
   }
 }
 

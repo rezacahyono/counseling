@@ -29,7 +29,8 @@ const ActionSchoolForm = dynamic(
 type Props = {
   actionSchools: ActionSchool[]
 }
-const TableListActionSchool = ({ actionSchools }: Props) => {
+
+export default function TableListActionSchool({ actionSchools }: Props) {
   const [filterValue, setFilterValue] = React.useState('')
   const [rowsPerPage, setRowsPerPage] = React.useState(5)
   const [page, setPage] = React.useState(1)
@@ -88,17 +89,17 @@ const TableListActionSchool = ({ actionSchools }: Props) => {
             </Chip>
           )
         case 'stack':
-          return <p className='text-base font-normal capitalize'>{cellValue}</p>
+          return <p className='text-sm font-normal capitalize'>{cellValue}</p>
         case 'action':
           return (
             <div className='flex w-screen max-w-xs lg:max-w-md'>
-              <p className='text-base font-normal'>{cellValue}</p>
+              <p className='text-sm font-normal'>{cellValue}</p>
             </div>
           )
         case 'sanction':
           return (
             <div className='flex w-screen max-w-xs lg:max-w-md'>
-              <p className='text-base font-normal'>{cellValue}</p>
+              <p className='text-sm font-normal'>{cellValue}</p>
             </div>
           )
         case 'actions':
@@ -308,6 +309,4 @@ const TableListActionSchool = ({ actionSchools }: Props) => {
     </Table>
   )
 }
-
-export default TableListActionSchool
 

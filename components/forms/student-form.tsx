@@ -1,5 +1,3 @@
-'use client'
-
 import { classGrade, gender } from '@/constants/data'
 import { studentScheme } from '@/lib/validations/analytic'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -28,7 +26,8 @@ import { z } from 'zod'
 type Props = {
   student?: Student
 }
-const StudentForm = ({ student }: Props) => {
+
+export default function StudentForm({ student }: Props) {
   const pathname = usePathname()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
@@ -50,10 +49,8 @@ const StudentForm = ({ student }: Props) => {
   })
 
   const onSubmit = handleSubmit(async data => {
-    const createNewStudent = (await import('@/lib/actions/student.action'))
-      .createNewStudent
-    const updateStudentById = (await import('@/lib/actions/student.action'))
-      .updateStudentById
+    const { createNewStudent } = await import('@/lib/actions/student.action')
+    const { updateStudentById } = await import('@/lib/actions/student.action')
     const toast = (await import('react-hot-toast')).default
     let res = Promise.resolve()
     if (!student) {
@@ -153,7 +150,7 @@ const StudentForm = ({ student }: Props) => {
                             labelPlacement='outside'
                             placeholder='Inputkan NIS'
                             {...field}
-                            isInvalid={errors.nis ? true : false}
+                            isInvalid={!!errors.nis}
                             errorMessage={errors.nis?.message}
                           />
                         )}
@@ -171,7 +168,7 @@ const StudentForm = ({ student }: Props) => {
                             labelPlacement='outside'
                             placeholder='Inputkan nama'
                             {...field}
-                            isInvalid={errors.name ? true : false}
+                            isInvalid={!!errors.name}
                             errorMessage={errors.name?.message}
                           />
                         )}
@@ -189,7 +186,7 @@ const StudentForm = ({ student }: Props) => {
                         variant='bordered'
                         labelPlacement='outside'
                         {...register('class')}
-                        isInvalid={errors.class ? true : false}
+                        isInvalid={!!errors.class}
                         errorMessage={errors.class?.message}
                       >
                         {classGrade.map(item => (
@@ -209,7 +206,7 @@ const StudentForm = ({ student }: Props) => {
                         variant='bordered'
                         labelPlacement='outside'
                         {...register('gender')}
-                        isInvalid={errors.gender ? true : false}
+                        isInvalid={!!errors.gender}
                         errorMessage={errors.gender?.message}
                       >
                         {gender.map(item => (
@@ -249,7 +246,7 @@ const StudentForm = ({ student }: Props) => {
                             {...field}
                             labelPlacement='outside'
                             placeholder='Inputkan nama orangtua/wali'
-                            isInvalid={errors.nameParent ? true : false}
+                            isInvalid={!!errors.nameParent}
                             errorMessage={errors.nameParent?.message}
                           />
                         )}
@@ -277,7 +274,7 @@ const StudentForm = ({ student }: Props) => {
                             maxLength={12}
                             {...field}
                             placeholder='Inputkan No HP orangtua/wali'
-                            isInvalid={errors.phoneNumberParent ? true : false}
+                            isInvalid={!!errors.phoneNumberParent}
                             errorMessage={errors.phoneNumberParent?.message}
                           />
                         )}
@@ -309,6 +306,4 @@ const StudentForm = ({ student }: Props) => {
     </>
   )
 }
-
-export default StudentForm
 

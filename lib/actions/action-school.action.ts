@@ -53,7 +53,7 @@ export async function deleteActionSchoolById({
   path: string
 }): Promise<void> {
   try {
-    if (ids) {
+    if (ids && ids.length > 0) {
       await prisma.actionSchool.deleteMany({
         where: {
           id: {

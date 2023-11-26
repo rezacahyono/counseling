@@ -39,7 +39,7 @@ model Subcriteria {
   name          String
   description   String   @db.Text
   valuePriority Float?   @db.Double
-  criteria      Criteria @relation(fields: [criteriaId], references: [id])
+  criteria      Criteria @relation(fields: [criteriaId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   criteriaId    String
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -67,9 +67,9 @@ model Student {
 
 model ComparisonCriteria {
   id              String   @id @default(cuid())
-  criteria1       Criteria @relation("criteriaId1", fields: [criteriaId1], references: [id])
+  criteria1       Criteria @relation("criteriaId1", fields: [criteriaId1], references: [id], onDelete: Cascade, onUpdate: Cascade)
   criteriaId1     String
-  criteria2       Criteria @relation("criteriaId2", fields: [criteriaId2], references: [id])
+  criteria2       Criteria @relation("criteriaId2", fields: [criteriaId2], references: [id], onDelete: Cascade, onUpdate: Cascade)
   criteriaId2     String
   valueComparison Float?   @default(1.0) @db.Double
   createdAt       DateTime @default(now())
@@ -80,9 +80,9 @@ model ComparisonCriteria {
 
 model ComparisonSubcriteria {
   id              String      @id @default(cuid())
-  subcriteria1    Subcriteria @relation("subcriteria1", fields: [subcriteriaId1], references: [id])
+  subcriteria1    Subcriteria @relation("subcriteria1", fields: [subcriteriaId1], references: [id], onDelete: Cascade, onUpdate: Cascade)
   subcriteriaId1  String
-  subcriteria2    Subcriteria @relation("subcriteria2", fields: [subcriteriaId2], references: [id])
+  subcriteria2    Subcriteria @relation("subcriteria2", fields: [subcriteriaId2], references: [id], onDelete: Cascade, onUpdate: Cascade)
   subcriteriaId2  String
   valueComparison Float?      @default(1.0) @db.Double
   createdAt       DateTime    @default(now())
@@ -105,11 +105,11 @@ model ActionSchool {
 
 model Offense {
   id            String      @id @default(cuid())
-  student       Student     @relation(fields: [studentId], references: [id])
+  student       Student     @relation(fields: [studentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   studentId     String
-  criteria      Criteria    @relation(fields: [criteriaId], references: [id])
+  criteria      Criteria    @relation(fields: [criteriaId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   criteriaId    String
-  subcriteria   Subcriteria @relation(fields: [subcriteriaId], references: [id])
+  subcriteria   Subcriteria @relation(fields: [subcriteriaId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   subcriteriaId String
   description   String      @db.Text
   date          DateTime
@@ -119,10 +119,10 @@ model Offense {
 
 model Recomendation {
   id             String       @id @default(cuid())
-  student        Student      @relation(fields: [studentId], references: [id])
+  student        Student      @relation(fields: [studentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   studentId      String       @unique
   totalPoin      Float
-  actionSchool   ActionSchool @relation(fields: [actionSchoolId], references: [id])
+  actionSchool   ActionSchool @relation(fields: [actionSchoolId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   actionSchoolId String
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt

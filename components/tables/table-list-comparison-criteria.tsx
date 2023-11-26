@@ -12,13 +12,15 @@ import {
   TableRow,
 } from '@nextui-org/react'
 import { ComparisonCriteria, Criteria, Prisma } from '@prisma/client'
-import classNames from 'classnames'
 import dynamic from 'next/dynamic'
 import { usePathname } from 'next/navigation'
 import React from 'react'
 
 const RadioComparison = dynamic(
   () => import('@/components/radio/radio-comparison')
+)
+const TableConsistencyCriteria = dynamic(
+  () => import('@/components/tables/table-consistency-criteria')
 )
 
 type Props = {
@@ -27,8 +29,11 @@ type Props = {
     criteria2: Criteria
   } & ComparisonCriteria)[]
 }
-const TableListComparisonCriteria = ({ comparisonCriterias }: Props) => {
+export default function TableListComparisonCriteria({
+  comparisonCriterias,
+}: Props) {
   const pathname = usePathname()
+
   const renderCell = React.useCallback(
     (
       comparisonCriteria: {
@@ -41,16 +46,16 @@ const TableListComparisonCriteria = ({ comparisonCriterias }: Props) => {
         id: string,
         comparisonCriteria: Prisma.ComparisonCriteriaUncheckedUpdateInput
       ) => {
-        const updateComparisonCriteriaById = (
-          await import('@/lib/actions/comparison-kriteria.action')
-        ).updateComparisonCriteriaById
+        const { updateComparisonCriteriaById } = await import(
+          '@/lib/actions/comparison-criteria.action'
+        )
         await updateComparisonCriteriaById(id, comparisonCriteria, pathname)
       }
 
       switch (columnKey) {
         case 'criteria1':
           return (
-            <p className='text-base font-normal capitalize'>
+            <p className='text-sm font-normal capitalize'>
               {comparisonCriteria.criteria1.name}
             </p>
           )
@@ -79,7 +84,7 @@ const TableListComparisonCriteria = ({ comparisonCriterias }: Props) => {
           )
         case 'criteria2':
           return (
-            <p className='text-bold text-sm capitalize'>
+            <p className='text-sm font-normal capitalize'>
               {comparisonCriteria.criteria2.name}
             </p>
           )
@@ -87,6 +92,12 @@ const TableListComparisonCriteria = ({ comparisonCriterias }: Props) => {
     },
     [pathname]
   )
+
+  const bottomContent = React.useMemo(() => {
+    return (
+      <TableConsistencyCriteria comparisonCriterias={comparisonCriterias} />
+    )
+  }, [comparisonCriterias])
 
   return (
     <Table
@@ -98,14 +109,16 @@ const TableListComparisonCriteria = ({ comparisonCriterias }: Props) => {
       isStriped
       className=' h-auto min-w-full w-full py-4'
       shadow='none'
+      bottomContent={bottomContent}
+      bottomContentPlacement='outside'
     >
       <TableHeader columns={columnComparisonCriteria}>
         {column => (
           <TableColumn
             key={column.uid}
-            className={classNames({
-              'text-center': column.uid === 'actions',
-            })}
+            className={`${
+              column.uid === 'valueComparison' ? 'text-center' : ''
+            }`}
           >
             {column.name}
           </TableColumn>
@@ -124,6 +137,4 @@ const TableListComparisonCriteria = ({ comparisonCriterias }: Props) => {
     </Table>
   )
 }
-
-export default TableListComparisonCriteria
 

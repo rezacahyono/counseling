@@ -42,11 +42,17 @@ const handler = NextAuth({
         user: {
           ...session.user,
           id: token.id,
+          name: token.name,
+          image: token.picture,
           randomKey: token.randomKey,
         },
       }
     },
-    jwt: ({ token, user }) => {
+    jwt: ({ token, user, session, trigger }) => {
+      if ((trigger === 'update' && session?.name) || session?.image) {
+        token.name = session.name
+        token.picture = session.image
+      }
       if (user) {
         const u = user as unknown as any
         return {

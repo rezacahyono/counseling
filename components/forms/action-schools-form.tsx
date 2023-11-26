@@ -1,4 +1,3 @@
-'use client'
 import { actionSchoolScheme } from '@/lib/validations/analytic'
 import { marksSlider } from '@/utils/util'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -26,7 +25,8 @@ import { z } from 'zod'
 type Props = {
   actionSchool?: ActionSchool
 }
-const ActionSchoolForm = ({ actionSchool }: Props) => {
+
+export default function ActionSchoolForm({ actionSchool }: Props) {
   const pathname = usePathname()
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
@@ -45,12 +45,12 @@ const ActionSchoolForm = ({ actionSchool }: Props) => {
   })
 
   const onSubmit = handleSubmit(async data => {
-    const createNewActionSchool = (
+    const {createNewActionSchool} = (
       await import('@/lib/actions/action-school.action')
-    ).createNewActionSchool
-    const updateActionSchoolById = (
+    )
+    const {updateActionSchoolById} = (
       await import('@/lib/actions/action-school.action')
-    ).updateActionSchoolById
+    )
     const toast = (await import('react-hot-toast')).default
     let res = Promise.resolve()
     if (!actionSchool) {
@@ -165,7 +165,7 @@ const ActionSchoolForm = ({ actionSchool }: Props) => {
                             labelPlacement='outside'
                             placeholder='Inputkan tingkatan stack'
                             {...field}
-                            isInvalid={errors.stack ? true : false}
+                            isInvalid={!!errors.stack}
                             errorMessage={errors.stack?.message}
                           />
                         )}
@@ -183,7 +183,7 @@ const ActionSchoolForm = ({ actionSchool }: Props) => {
                             labelPlacement='outside'
                             type='text'
                             {...field}
-                            isInvalid={errors.action ? true : false}
+                            isInvalid={!!errors.action}
                             errorMessage={errors.action?.message}
                           />
                         )}
@@ -201,7 +201,7 @@ const ActionSchoolForm = ({ actionSchool }: Props) => {
                             labelPlacement='outside'
                             type='text'
                             {...field}
-                            isInvalid={errors.sanction ? true : false}
+                            isInvalid={!!errors.sanction}
                             errorMessage={errors.sanction?.message}
                           />
                         )}
@@ -231,8 +231,5 @@ const ActionSchoolForm = ({ actionSchool }: Props) => {
         </ModalContent>
       </Modal>
     </>
-  )
+  ) 
 }
-
-export default ActionSchoolForm
-

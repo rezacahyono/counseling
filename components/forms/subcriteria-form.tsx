@@ -1,5 +1,3 @@
-'use client'
-
 import { subcriteriaScheme } from '@/lib/validations/analytic'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {

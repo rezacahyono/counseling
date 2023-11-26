@@ -1,4 +1,10 @@
-import { ComparisonCriteria, ComparisonSubcriteria } from '@prisma/client'
+import {
+  ComparisonCriteria,
+  ComparisonSubcriteria,
+  Criteria,
+  Offense,
+  Subcriteria,
+} from '@prisma/client'
 
 export function createComparisonCriteriaMatrix(
   data: ComparisonCriteria[]
@@ -106,4 +112,3 @@ export function calculateConsistencyRatio(
 ): number {
   return consistencyIndex / ratioIndex(length)
 }
-

@@ -30,6 +30,25 @@ export async function createNewSubcriteria(
     await prisma.subcriteria.create({
       data: subcriteria,
     })
+
+    const subcriterias = await prisma.subcriteria.findMany()
+    const comparisonSubcriteris: Prisma.ComparisonSubcriteriaUncheckedCreateInput[] =
+      subcriterias.flatMap((subcriteria1, index1) =>
+        subcriterias
+          .slice(index1 + 1)
+          .filter(
+            subcriteria2 => subcriteria1.criteriaId === subcriteria2.criteriaId
+          )
+          .map(subcriteria2 => ({
+            subcriteriaId1: subcriteria1.id,
+            subcriteriaId2: subcriteria2.id,
+          }))
+      )
+
+    await prisma.comparisonSubcriteria.createMany({
+      data: comparisonSubcriteris,
+      skipDuplicates: true,
+    })
     revalidatePath(path)
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -71,7 +90,24 @@ export async function deleteSubcriteriaById({
   path: string
 }): Promise<void> {
   try {
-    if (ids) {
+    if (ids && ids.length > 0) {
+      // const deleteComparisonSubcriteriaMany =
+      //   prisma.comparisonSubcriteria.deleteMany({
+      //     where: {
+      //       OR: [
+      //         {
+      //           subcriteriaId1: {
+      //             in: ids,
+      //           },
+      //         },
+      //         {
+      //           subcriteriaId2: {
+      //             in: ids,
+      //           },
+      //         },
+      //       ],
+      //     },
+      //   })
       await prisma.subcriteria.deleteMany({
         where: {
           id: {
@@ -79,12 +115,26 @@ export async function deleteSubcriteriaById({
           },
         },
       })
+      // await prisma.$transaction([
+      //   deleteComparisonSubcriteriaMany,
+      //   deleteSubcriteriaMany,
+      // ])
     } else if (id) {
+      // const deleteComparisonSubcriteria =
+      //   prisma.comparisonSubcriteria.deleteMany({
+      //     where: {
+      //       OR: [{ subcriteriaId1: id }, { subcriteriaId2: id }],
+      //     },
+      //   })
       await prisma.subcriteria.delete({
         where: {
           id: id,
         },
       })
+      // await prisma.$transaction([
+      //   deleteComparisonSubcriteria,
+      //   deleteSubcriteria,
+      // ])
     }
     revalidatePath(path)
   } catch (error) {

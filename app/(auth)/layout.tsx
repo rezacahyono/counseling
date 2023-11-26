@@ -4,7 +4,7 @@ import '../styles/globals.css'
 import { Toaster } from 'react-hot-toast'
 import dynamic from 'next/dynamic'
 
-const Providers = dynamic(() => import('../providers'))
+const Providers = dynamic(() => import('@/app/providers'))
 
 export const metadata = {
   title: 'Konseling | MAN 19 Jakarta',

@@ -1,63 +1,52 @@
 'use client'
-import { Card, Chip, Listbox, ListboxItem } from '@nextui-org/react'
-import { IoIosArrowForward } from 'react-icons/io'
+import { poinColorMap } from '@/constants/color'
+import { Chip, Listbox, ListboxItem } from '@nextui-org/react'
+import { Criteria, Offense, Student, Subcriteria } from '@prisma/client'
 import React from 'react'
 
-const items = [
-  {
-    nis: '2011500111',
-    name: 'Muhamad Reza Cahyono',
-    poinTotal: 20,
-  },
-  {
-    nis: '2011500222',
-    name: 'Muhamad Reza Cahyono',
-    poinTotal: 20,
-  },
-  {
-    nis: '2011500333',
-    name: 'Muhamad Reza Cahyono',
-    poinTotal: 20,
-  },
-  {
-    nis: '2011500444',
-    name: 'Muhamad Reza Cahyono',
-    poinTotal: 20,
-  },
-]
+type Props = {
+  offenses: ({
+    student: Student
+    criteria: Criteria
+    subcriteria: Subcriteria
+  } & Offense)[]
+}
 
-export default function ListBoxLatestOffense() {
+export default function ListBoxLatestOffense({ offenses }: Props) {
   return (
     <div className='w-full max-w-full px-3  lg:w-1/3 lg:flex-none mb-6 lg:mb-0 '>
-      <Card className='h-full p-2 shadow-soft-xl'>
+      <div className='h-full shadow-soft-xl rounded-xl bg-content1 py-2 px-4'>
         <div className='text-center'>
           <h5 className='font-bold text-lg text-default-800 py-4 md:py-2'>
             Pelanggaran Terakhir
           </h5>
         </div>
-        <Listbox
-          items={items}
-          aria-label='Dynamic Actions'
-          // onAction={(key) => alert(key)}
-        >
+        <Listbox items={offenses} aria-label='Dynamic Actions'>
           {item => (
             <ListboxItem
-              key={item.nis}
-              endContent={
-                <IoIosArrowForward className='text-xl text-default-400' />
-              }
+              key={item.id}
               startContent={
-                <Chip color='danger' variant='shadow'>
-                  {item.poinTotal}
+                <Chip
+                  color={poinColorMap(item.subcriteria.poin)}
+                  variant='shadow'
+                  className='mr-4'
+                >
+                  {item.subcriteria.poin}
                 </Chip>
               }
-              description={item.nis}
+              description={`${item.criteria.name} - ${item.subcriteria.name}`}
+              aria-label={item.id}
             >
-              <p>{item.name}</p>
+              <div className='flex gap-2'>
+                <p className='text-xs leading-6 text-default-600'>
+                  {item.student.nis}
+                </p>
+                <p>{item.student.name}</p>
+              </div>
             </ListboxItem>
           )}
         </Listbox>
-      </Card>
+      </div>
     </div>
   )
 }

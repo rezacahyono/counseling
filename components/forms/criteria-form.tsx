@@ -1,4 +1,3 @@
-'use client'
 import { criteriaScheme } from '@/lib/validations/analytic'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
@@ -41,10 +40,8 @@ const CriteriaForm = ({ criteria }: Props) => {
   })
 
   const onSubmit = handleSubmit(async data => {
-    const createNewCriteria = (await import('@/lib/actions/criteria.action'))
-      .createNewCriteria
-    const updateCriteriaById = (await import('@/lib/actions/criteria.action'))
-      .updateCriteriaById
+    const { createNewCriteria } = await import('@/lib/actions/criteria.action')
+    const { updateCriteriaById } = await import('@/lib/actions/criteria.action')
     const toast = (await import('react-hot-toast')).default
     let res = Promise.resolve()
     if (!criteria) {
@@ -120,12 +117,11 @@ const CriteriaForm = ({ criteria }: Props) => {
                             label='Nama Kriteria'
                             variant='bordered'
                             fullWidth
-                            isClearable
                             size='lg'
                             labelPlacement='outside'
                             placeholder='Inputkan nama kriteria'
                             {...field}
-                            isInvalid={errors.name ? true : false}
+                            isInvalid={!!errors.name}
                             errorMessage={errors.name?.message}
                           />
                         )}

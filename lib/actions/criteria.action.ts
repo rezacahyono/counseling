@@ -1,12 +1,20 @@
 'use server'
+
 import { Prisma } from '@prisma/client'
 import prisma from '../prisma/client'
 import { criteriaScheme } from '../validations/analytic'
 import { handlePrismaError } from '../prisma/errors'
 import { revalidatePath } from 'next/cache'
 
-export async function fetchAllCriteria() {
-  return await prisma.criteria.findMany()
+type Includes = {
+  subcriteria?: boolean
+}
+export async function fetchAllCriteria(includes?: Includes) {
+  return await prisma.criteria.findMany({
+    include: {
+      subcriteria: includes?.subcriteria,
+    },
+  })
 }
 
 export async function createNewCriteria({
@@ -29,24 +37,16 @@ export async function createNewCriteria({
     })
 
     const criterias = await prisma.criteria.findMany()
-    const comparisonCriteriasArray: Prisma.ComparisonCriteriaUncheckedCreateInput[] =
-      []
-
-    await Promise.all(
-      criterias.map(async (criteria1, i) => {
-        await Promise.all(
-          criterias.slice(i + 1).map(async criteria2 => {
-            comparisonCriteriasArray.push({
-              criteriaId1: criteria1.id,
-              criteriaId2: criteria2.id,
-            })
-          })
-        )
-      })
-    )
+    const comparisonCriterias: Prisma.ComparisonCriteriaUncheckedCreateInput[] =
+      criterias.flatMap((criteria1, i) =>
+        criterias.slice(i + 1).map(criteria2 => ({
+          criteriaId1: criteria1.id,
+          criteriaId2: criteria2.id,
+        }))
+      )
 
     await prisma.comparisonCriteria.createMany({
-      data: comparisonCriteriasArray,
+      data: comparisonCriterias,
       skipDuplicates: true,
     })
 
@@ -97,62 +97,100 @@ export async function deleteCriteriaById({
   path: string
 }): Promise<void> {
   try {
-    if (ids) {
-      const deleteSubcriteriaMany = prisma.subcriteria.deleteMany({
-        where: {
-          criteriaId: {
-            in: ids,
-          },
-        },
-      })
-      const deleteComparisonCriteriaMany = prisma.comparisonCriteria.deleteMany(
-        {
-          where: {
-            OR: [
-              {
-                criteriaId1: {
-                  in: ids,
-                },
-              },
-              {
-                criteriaId1: {
-                  in: ids,
-                },
-              },
-            ],
-          },
-        }
-      )
-      const deleteCriteriaMany = prisma.criteria.deleteMany({
+    if (ids && ids.length > 0) {
+      // const deleteComparisonSubcriteriaMany =
+      //   prisma.comparisonSubcriteria.deleteMany({
+      //     where: {
+      //       OR: [
+      //         {
+      //           subcriteria1: {
+      //             criteriaId: {
+      //               in: ids,
+      //             },
+      //           },
+      //         },
+      //         {
+      //           subcriteria2: {
+      //             criteriaId: {
+      //               in: ids,
+      //             },
+      //           },
+      //         },
+      //       ],
+      //     },
+      //   })
+
+      // const deleteSubcriteriaMany = prisma.subcriteria.deleteMany({
+      //   where: {
+      //     criteriaId: {
+      //       in: ids,
+      //     },
+      //   },
+      // })
+
+      // const deleteComparisonCriteriaMany = prisma.comparisonCriteria.deleteMany(
+      //   {
+      //     where: {
+      //       OR: [{ criteriaId1: { in: ids } }, { criteriaId2: { in: ids } }],
+      //     },
+      //   }
+      // )
+
+      await prisma.criteria.deleteMany({
         where: {
           id: {
             in: ids,
           },
         },
       })
-      await prisma.$transaction([
-        deleteSubcriteriaMany,
-        deleteComparisonCriteriaMany,
-        deleteCriteriaMany,
-      ])
+
+      // await prisma.$transaction([
+      //   deleteComparisonSubcriteriaMany,
+      //   deleteSubcriteriaMany,
+      //   deleteComparisonCriteriaMany,
+      //   deleteCriteriaMany,
+      // ])
     } else if (id) {
-      const deleteSubcriteria = prisma.subcriteria.deleteMany({
-        where: { criteriaId: id },
-      })
-      const deleteComparisonCriteria = prisma.comparisonCriteria.deleteMany({
-        where: {
-          OR: [{ criteriaId1: id }, { criteriaId2: id }],
-        },
-      })
-      const deleteCriteria = prisma.criteria.delete({
+      // const deleteComparisonSubcriteria =
+      //   prisma.comparisonSubcriteria.deleteMany({
+      //     where: {
+      //       OR: [
+      //         {
+      //           subcriteria1: {
+      //             criteriaId: id,
+      //           },
+      //         },
+      //         {
+      //           subcriteria2: {
+      //             criteriaId: id,
+      //           },
+      //         },
+      //       ],
+      //     },
+      //   })
+
+      // const deleteSubcriteria = prisma.subcriteria.deleteMany({
+      //   where: { criteriaId: id },
+      // })
+
+      // const deleteComparisonCriteria = prisma.comparisonCriteria.deleteMany({
+      //   where: {
+      //     OR: [{ criteriaId1: id }, { criteriaId2: id }],
+      //   },
+      // })
+
+      await prisma.criteria.delete({
         where: { id: id },
       })
-      await prisma.$transaction([
-        deleteSubcriteria,
-        deleteComparisonCriteria,
-        deleteCriteria,
-      ])
+
+      // await prisma.$transaction([
+      //   deleteComparisonSubcriteria,
+      //   deleteSubcriteria,
+      //   deleteComparisonCriteria,
+      //   deleteCriteria,
+      // ])
     }
+
     revalidatePath(path)
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {

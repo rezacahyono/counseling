@@ -1,4 +1,3 @@
-'use client'
 import {
   Button,
   Modal,
@@ -54,6 +53,12 @@ export default function ButtonDelete({
           await import('@/lib/actions/action-school.action')
         ).deleteActionSchoolById
         res = deleteActionSchoolById({ id, ids, path })
+        break;
+      case 'offense':
+        const deleteOffenseById = (await import('@/lib/actions/offense.action'))
+          .deleteOffenseById
+        res = deleteOffenseById({ id, ids, path })
+        break
       default:
         res = Promise.resolve()
         break

@@ -27,7 +27,7 @@ type Props = {
   criterias: Criteria[]
 }
 
-const TableListCriteria = ({ criterias }: Props) => {
+export default function TableListCriteria({ criterias }: Props) {
   const [filterValue, setFilterValue] = React.useState('')
   const [rowsPerPage, setRowsPerPage] = React.useState(5)
   const [page, setPage] = React.useState(1)
@@ -74,11 +74,9 @@ const TableListCriteria = ({ criterias }: Props) => {
 
       switch (columnKey) {
         case 'name':
-          return (
-            <p className='font-medium text-base  capitalize'>{cellValue}</p>
-          )
+          return <p className='text-sm font-medium capitalize'>{cellValue}</p>
         case 'valuePriority':
-          return <p className='text-base font-normal capitalize'>{cellValue}</p>
+          return <p className='text-sm font-medium capitalize'>{cellValue}</p>
         case 'actions':
           return (
             <div className='flex box-border justify-evenly gap-2'>
@@ -152,7 +150,7 @@ const TableListCriteria = ({ criterias }: Props) => {
           <div className='flex flex-row flex-wrap box-border gap-3'>
             <CriteriaForm />
             <Button
-            as={Link}
+              as={Link}
               color='primary'
               endContent={<BiSolidCalculator />}
               variant='ghost'
@@ -294,6 +292,4 @@ const TableListCriteria = ({ criterias }: Props) => {
     </Table>
   )
 }
-
-export default TableListCriteria
 

@@ -5,6 +5,7 @@ import {
   Button,
   Chip,
   Input,
+  Link,
   Pagination,
   Selection,
   Table,
@@ -21,7 +22,6 @@ import ButtonDelete from '../button/button-delete'
 import { BiSearchAlt, BiSolidCalculator } from 'react-icons/bi'
 import { columnSubcriteria } from '@/constants/columns'
 import classNames from 'classnames'
-import Link from 'next/link'
 import SubcriteriaForm from '../forms/subcriteria-form'
 
 type Props = {
@@ -94,9 +94,7 @@ export default function TableListSubcriteria({
             </p>
           )
         case 'name':
-          return (
-            <p className='font-medium text-base capitalize'>{cellValue}</p>
-          )
+          return <p className='font-medium text-base capitalize'>{cellValue}</p>
         case 'description':
           return (
             <div className='flex w-screen max-w-xs lg:max-w-md'>
@@ -114,9 +112,7 @@ export default function TableListSubcriteria({
             </Chip>
           )
         case 'valuePriority':
-          return (
-            <p className='font-semibold text-medium capitalize'>{cellValue}</p>
-          )
+          return <p className='text-base font-normal capitalize'>{cellValue}</p>
         case 'actions':
           return (
             <div className='flex flex-row box-border justify-evenly gap-2'>
@@ -129,7 +125,7 @@ export default function TableListSubcriteria({
                 path={pathname}
                 message='subkriteria'
                 model='subcriteria'
-                action={() => {}}
+                action={() => setSelectionKeys(new Set([]))}
               />
             </div>
           )
@@ -193,14 +189,14 @@ export default function TableListSubcriteria({
           <div className='flex flex-row flex-wrap box-border gap-3'>
             <SubcriteriaForm criterias={criterias} />
             <Button
+              as={Link}
               color='primary'
               endContent={<BiSolidCalculator />}
               variant='ghost'
               isDisabled={subcriterias.length < 3}
+              href='/subkriteria/perbandingan'
             >
-              <Link href='/subkriteria/perbandingan'>
-                Hitung Nilai Prioritas
-              </Link>
+              Hitung Nilai Prioritas
             </Button>
           </div>
         </div>

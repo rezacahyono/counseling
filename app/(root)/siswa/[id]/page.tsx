@@ -1,31 +1,35 @@
 import { classColorMap } from '@/constants/color'
-import { Card, CardBody, Chip, Link } from '@nextui-org/react'
+import { fetchStudentById } from '@/lib/actions/student.action'
+import { Chip, Link } from '@nextui-org/react'
 import dynamic from 'next/dynamic'
 import React from 'react'
 import { BiSolidPhoneCall } from 'react-icons/bi'
 
+const PageWrapper = dynamic(() => import('@/components/wrapper/page-wrapper'))
 const Breadcrumbs = dynamic(
   () => import('@/components/breadcrumbs/breadcrumbs')
 )
 
-const DetailStudentPage = async ({ params }: { params: { id: string } }) => {
-  const fecthStudentById = (await import('@/lib/actions/student.action'))
-    .fetchStudentById
-  const student = await fecthStudentById(params.id)
+export default async function DetailStudentPage({
+  params,
+}: {
+  params: { id: string }
+}) {
+  const student = await fetchStudentById(params.id)
 
   return (
-    <div className='w-full px-6 py-6 mx-auto'>
-      <div className='pb-4'>
-        <Breadcrumbs nameStudent={student?.name} />
-      </div>
-      <h3 className='text-2xl font-bold leading-tight text-default-800 py-2'>
-        Detail data siswa
-      </h3>
-      <p className='text-base leading-6 text-default-500'>
-        informasi detail terkait data siswa
-      </p>
-      <Card className='shadow-soft-xl h-full my-6 px-2 lg:px-6'>
-        <CardBody>
+    <PageWrapper>
+      <div className='w-full px-6 py-6 mx-auto'>
+        <div className='pb-4'>
+          <Breadcrumbs nameStudent={student?.name} />
+        </div>
+        <h3 className='text-2xl font-bold leading-tight text-default-800 py-2'>
+          Detail data siswa
+        </h3>
+        <p className='text-base leading-6 text-default-500'>
+          informasi detail terkait data siswa
+        </p>
+        <div className='shadow-soft-xl rounded-xl h-full px-4 lg:px-9 py-4 bg-content1 sm:my-10 my-6'>
           <dl className='divide-y divide-default-300'>
             <div className='py-3 sm:py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0'>
               <dt className='text-base font-normal leading-6 text-default-800'>
@@ -114,11 +118,9 @@ const DetailStudentPage = async ({ params }: { params: { id: string } }) => {
               </dd>
             </div>
           </dl>
-        </CardBody>
-      </Card>
-    </div>
+        </div>
+      </div>
+    </PageWrapper>
   )
 }
-
-export default DetailStudentPage
 
