@@ -22,16 +22,12 @@ const handler = NextAuth({
         if (!credentials?.email || !credentials?.password) {
           throw new Error('Credentials salah')
         }
-
         const res = await fecthUserByEmailPassword(
           credentials.email,
           credentials.password
         )
-        if (res) {
-          return res
-        } else {
-          throw new Error('Credentials errors')
-        }
+        if (!res) return null
+        return res
       },
     }),
   ],

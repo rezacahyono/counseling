@@ -71,12 +71,6 @@ export async function deleteStudentById({
 }): Promise<void> {
   try {
     if (ids && ids.length > 0) {
-      // const deleteRecomendationMany = prisma.recomendation.deleteMany({
-      //   where: { studentId: { in: ids } },
-      // })
-      // const deleteOffenseMany = prisma.offense.deleteMany({
-      //   where: { studentId: { in: ids } },
-      // })
       const deleteStudentMany = prisma.student.deleteMany({
         where: {
           id: {
@@ -85,23 +79,13 @@ export async function deleteStudentById({
         },
       })
 
-      await prisma.$transaction([
-        deleteStudentMany,
-      ])
+      await prisma.$transaction([deleteStudentMany])
     } else if (id) {
-      // const deleteRecomendation = prisma.recomendation.delete({
-      //   where: { studentId: id },
-      // })
-      // const deleteOffense = prisma.offense.deleteMany({
-      //   where: { studentId: id },
-      // })
       const deleteStudent = prisma.student.delete({
         where: { id: id },
       })
 
-      await prisma.$transaction([
-        deleteStudent,
-      ])
+      await prisma.$transaction([deleteStudent])
     }
     revalidatePath(path)
   } catch (error) {

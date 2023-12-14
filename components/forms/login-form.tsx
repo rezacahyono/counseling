@@ -25,23 +25,39 @@ export default function LoginForm() {
   const handleOnSubmit = handleSubmit(async data => {
     const toast = (await import('react-hot-toast')).default
     setIsLoading(true)
-    try {
-      await signIn('credentials', {
-        redirect: false,
-        email: data.email,
-        password: data.password,
-      }).then(value => {
-        if (value?.ok) {
-          router.push('/')
-        } else {
-          toast.error('Login gagal')
+    await signIn('credentials', {
+      redirect: false,
+      email: data.email,
+      password: data.password,
+    })
+      .then(value => {
+        if (!value) return
+        if (value.error) {
+          toast.error(value.error)
+          return null
         }
+        router.push('/')
       })
-      setIsLoading(false)
-    } catch (error: any) {
-      setIsLoading(false)
-      console.error('Error during sign in:', error.message)
-    }
+      .catch(error => {
+        toast.error(error.message)
+      })
+      .finally(() => {
+        setIsLoading(false)
+      })
+    // try {
+    //   await signIn('credentials', {
+    //     redirect: false,
+    //     email: data.email,
+    //     password: data.password,
+    //   })
+    //   router.push('/')
+    //   setIsLoading(false)
+    // } catch (error: any) {
+    //   console.error('Error during sign in:', error.message)
+    //   setIsLoading(false)
+    //   toast.error('Login gagal')
+
+    // }
   })
 
   return (

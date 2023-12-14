@@ -114,6 +114,8 @@ const CriteriaForm = ({ criteria }: Props) => {
                         control={control}
                         render={({ field }) => (
                           <Input
+                          isClearable
+                          onClear={() => field.onChange('')}
                             label='Nama Kriteria'
                             variant='bordered'
                             fullWidth

@@ -3,7 +3,7 @@ import { SidebarContext } from '@/hook/sidebar-context'
 import { NextUIProvider } from '@nextui-org/react'
 import { SessionProvider } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { ThemeProvider as NextThemesProvider, useTheme } from 'next-themes'
+import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import React from 'react'
 
 export default function Providers({ children }: { children: React.ReactNode }) {

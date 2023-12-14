@@ -6,9 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -24,7 +23,7 @@ model User {
 model Criteria {
   id            String   @id @default(cuid())
   name          String
-  valuePriority Float?   @db.DoublePrecision
+  valuePriority Float?   @db.Double
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
@@ -39,7 +38,7 @@ model Subcriteria {
   poin          Int
   name          String
   description   String   @db.Text
-  valuePriority Float?   @db.DoublePrecision
+  valuePriority Float?   @db.Double
   criteria      Criteria @relation(fields: [criteriaId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   criteriaId    String
   createdAt     DateTime @default(now())
@@ -72,7 +71,7 @@ model ComparisonCriteria {
   criteriaId1     String
   criteria2       Criteria @relation("criteriaId2", fields: [criteriaId2], references: [id], onDelete: Cascade, onUpdate: Cascade)
   criteriaId2     String
-  valueComparison Float?   @default(1.0) @db.DoublePrecision
+  valueComparison Float?   @default(1.0) @db.Double
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
@@ -85,7 +84,7 @@ model ComparisonSubcriteria {
   subcriteriaId1  String
   subcriteria2    Subcriteria @relation("subcriteria2", fields: [subcriteriaId2], references: [id], onDelete: Cascade, onUpdate: Cascade)
   subcriteriaId2  String
-  valueComparison Float?      @default(1.0) @db.DoublePrecision
+  valueComparison Float?      @default(1.0) @db.Double
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
 

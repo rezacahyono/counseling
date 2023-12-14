@@ -17,7 +17,6 @@ export default function SidebarItem({ title, icon, isActive, href }: Props) {
       setCollapsed()
     }
   }
-  console.log()
   return (
     <Link href={href} className='max-w-full'>
       <div

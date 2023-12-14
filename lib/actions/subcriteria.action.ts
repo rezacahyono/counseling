@@ -91,23 +91,6 @@ export async function deleteSubcriteriaById({
 }): Promise<void> {
   try {
     if (ids && ids.length > 0) {
-      // const deleteComparisonSubcriteriaMany =
-      //   prisma.comparisonSubcriteria.deleteMany({
-      //     where: {
-      //       OR: [
-      //         {
-      //           subcriteriaId1: {
-      //             in: ids,
-      //           },
-      //         },
-      //         {
-      //           subcriteriaId2: {
-      //             in: ids,
-      //           },
-      //         },
-      //       ],
-      //     },
-      //   })
       await prisma.subcriteria.deleteMany({
         where: {
           id: {
@@ -115,26 +98,12 @@ export async function deleteSubcriteriaById({
           },
         },
       })
-      // await prisma.$transaction([
-      //   deleteComparisonSubcriteriaMany,
-      //   deleteSubcriteriaMany,
-      // ])
     } else if (id) {
-      // const deleteComparisonSubcriteria =
-      //   prisma.comparisonSubcriteria.deleteMany({
-      //     where: {
-      //       OR: [{ subcriteriaId1: id }, { subcriteriaId2: id }],
-      //     },
-      //   })
       await prisma.subcriteria.delete({
         where: {
           id: id,
         },
       })
-      // await prisma.$transaction([
-      //   deleteComparisonSubcriteria,
-      //   deleteSubcriteria,
-      // ])
     }
     revalidatePath(path)
   } catch (error) {
